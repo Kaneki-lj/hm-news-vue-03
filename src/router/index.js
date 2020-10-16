@@ -8,33 +8,35 @@ import User from '../views/User.vue'
 import Edit from '../views/Edit.vue'
 import MyFollow from '../views/MyFollow.vue'
 import MyComment from '../views/MyComment.vue'
+import MyStar from '../views/MyStar.vue'
 
 Vue.use(VueRouter)
 
 const router = new VueRouter({
   // 配置路由规则
   routes: [
-    { path: '/', redirect: '/login'},
+    { path: '/', redirect: '/login' },
     { path: '/login', name: 'login', component: Login },
     { path: '/register', name: 'register', component: Register },
     { path: '/user', name: 'user', component: User },
     { path: '/edit', name: 'edit', component: Edit },
-    { path: '/my-follow', name: 'edit', component: MyFollow },
-    { path: '/my-comment', name: 'edit', component: MyComment },
-  
+    { path: '/my-follow', component: MyFollow },
+    { path: '/my-comment', component: MyComment },
+    { path: '/my-star', component: MyStar },
   ],
 })
 
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
-  if(to.path === '/user') {
+  const authPath = ['/user', '/my-follow', '/my-comments', '/my-star', '/edit']
+  if (authPath.includes(to.path)) {
     let token = localStorage.getItem('token')
-    if(token){
+    if (token) {
       next()
-    }else{
+    } else {
       next('/login')
     }
-  }else{
+  } else {
     next()
   }
 })

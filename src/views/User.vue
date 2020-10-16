@@ -9,6 +9,8 @@
         <div></div>
       </div>
       <div class="center">
+        <i v-if="info.gender === 1" class="iconfont iconxingbienan"></i>
+        <i v-else class="iconfont iconxingbienv"></i>
         <div class="nickname">{{ info.nickname }}</div>
         <div class="date">{{ info.create_date | date }}</div>
       </div>
@@ -27,7 +29,12 @@
         value="跟帖/回复"
         @click="$router.push('/my-comment')"
       />
-      <van-cell title="我的收藏" is-link value="文档/视频" />
+      <van-cell
+        title="我的收藏"
+        is-link
+        value="文档/视频"
+        @click="$router.push('/my-star')"
+      />
       <van-cell title="设置" is-link @click="$router.push('/edit')" />
       <van-cell title="退出" @click="logout" is-link />
     </van-cell-group>
@@ -41,16 +48,16 @@ export default {
       info: {},
     }
   },
-  created() {
+  async created() {
     let token = localStorage.getItem('token')
     let user_id = localStorage.getItem('user_id')
-    this.$axios.get(`/user/${user_id}`).then(res => {
-      // console.log(res.data)
+    let res = await this.$axios.get(`/user/${user_id}`)
+      console.log(res)
       const { statusCode, data } = res.data
       if (statusCode === 200) {
         this.info = data
       }
-    })
+   
   },
   methods: {
     async logout() {

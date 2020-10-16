@@ -17,9 +17,13 @@ import router from './router'
 import HmHeader from './components/HmHeader.vue'
 import HmLogo from './components/HmLogo.vue'
 import HmButton from './components/HmButton.vue'
+import HmPost from './components/HmPost.vue'
+
 Vue.component('hm-header', HmHeader)
 Vue.component('hm-logo', HmLogo)
 Vue.component('hm-button', HmButton)
+Vue.component('hm-post', HmPost)
+
 
 // 引入vant ui组件库
 import {
@@ -62,16 +66,17 @@ axios.interceptors.request.use(config => {
 })
 
 // 响应拦截器
-// axios.interceptors.response.use(res => {
-//   const { statusCode, message } = res.data
-//   if (statusCode === 401 && message === '用户信息验证失败') {
-//     // 删除失效token 和 id
-//     localStorage.removeItem('token')
-//     localStorage.removeItem('user_id')
-//     // 跳转login页面
-//     router.push('/login')
-//   }
-// })
+axios.interceptors.response.use(res => {
+  const { statusCode, message } = res.data
+  if (statusCode === 401 && message === '用户信息验证失败') {
+    // 删除失效token 和 id
+    localStorage.removeItem('token')
+    localStorage.removeItem('user_id')
+    // 跳转login页面
+    router.push('/login')
+  }
+  return res
+})
 
 /* {
   headers: {
