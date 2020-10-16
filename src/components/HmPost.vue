@@ -13,7 +13,11 @@
       </div>
       <div class="bottom">
         <span>{{ post.user.nickname }}</span>
-        <span>{{ post.comments.length }}跟帖</span>
+        <span
+          >{{
+            post.comments ? post.comments.length : post.comment_length
+          }}跟帖</span
+        >
       </div>
     </div>
     <!-- 单张图片 -->
@@ -24,7 +28,11 @@
         </div>
         <div class="bottom">
           <span>{{ post.user.nickname }}</span>
-          <span>{{ post.comments.length }}跟帖</span>
+          <span
+            >{{
+              post.comments ? post.comments.length : post.comment_length
+            }}跟帖</span
+          >
         </div>
       </div>
       <div class="right">
@@ -43,7 +51,11 @@
       </div>
       <div class="bottom">
         <span>{{ post.user.nickname }}</span>
-        <span>{{ post.comments.length }}跟帖</span>
+        <span
+          >{{
+            post.comments ? post.comments.length : post.comment_length
+          }}跟帖</span
+        >
       </div>
     </div>
   </div>
@@ -54,13 +66,13 @@ export default {
   props: ['post'],
   methods: {
     flxedURL(url) {
-      if(url.startsWith('http')){
+      if (url.startsWith('http')) {
         return url
-      }else{
+      } else {
         return this.$axios.defaults.baseURL + url
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

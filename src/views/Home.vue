@@ -13,14 +13,58 @@
         <i class="iconfont iconwode"></i>
       </div>
     </div>
+    <!-- tab栏 -->
+    <van-tabs v-model="active" sticky>
+      <van-tab :title="tab.name" v-for="tab in tabList" :key="tab.index">
+      </van-tab>
+      <hm-post :post="post" v-for="post in postList" :key="post.id"></hm-post>
+    </van-tabs>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      active: 1,
+      tabList: [],
+      postList: [],
+    }
+  },
+  watch: {
+    active(newActive) {
+      this.getPostList(this.tabList[this.newActive])
+    }
+  },
+  created() {
+    this.getTabsList()
+  },
+  methods: {
+    async getTabsList() {
+      let res = await this.$axios.get('/category')
+      if (res.data.statusCode === 200) {
+        this.tabList = res.data.data
+        this.getPostList(this.tabList[this.active].id)
+      }
+    },
+    async getPostList(id) {
+      let res = await this.$axios.get('/post', {
+        params: {
+          category: id,
+        },
+      })
+      if (res.data.statusCode === 200) {
+        this.postList = res.data.data
+      }
+    },
+  },
+}
 </script>
 
 <style lang="less" scoped>
+/deep/ .van-tabs__nav {
+  background: #ddd;
+}
 .header {
   height: 50px;
   background: #f00;
