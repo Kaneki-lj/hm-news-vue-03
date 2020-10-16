@@ -9,13 +9,14 @@ import Edit from '../views/Edit.vue'
 import MyFollow from '../views/MyFollow.vue'
 import MyComment from '../views/MyComment.vue'
 import MyStar from '../views/MyStar.vue'
+import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
 const router = new VueRouter({
   // 配置路由规则
   routes: [
-    { path: '/', redirect: '/login' },
+    { path: '/', redirect: '/home' },
     { path: '/login', name: 'login', component: Login },
     { path: '/register', name: 'register', component: Register },
     { path: '/user', name: 'user', component: User },
@@ -23,6 +24,8 @@ const router = new VueRouter({
     { path: '/my-follow', component: MyFollow },
     { path: '/my-comment', component: MyComment },
     { path: '/my-star', component: MyStar },
+    { path: '/home', component: Home },
+
   ],
 })
 
