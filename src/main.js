@@ -37,8 +37,10 @@ import {
   List,
   Tab,
   Tabs,
+  PullRefresh,
 } from 'vant'
 
+Vue.use(PullRefresh)
 Vue.use(Tab)
 Vue.use(Tabs)
 Vue.use(List)

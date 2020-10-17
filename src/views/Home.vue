@@ -17,7 +17,25 @@
     <van-tabs v-model="active" sticky>
       <van-tab :title="tab.name" v-for="tab in tabList" :key="tab.index">
       </van-tab>
-      <hm-post :post="post" v-for="post in postList" :key="post.id"></hm-post>
+      <van-pull-refresh
+        v-model="isRefreshing"
+        success-text="刷新成功"
+        @refresh="onRefresh"
+      >
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          :immediate-check="false"
+          @load="onLoad"
+          finished-text="我是有底线滴~~~~~~~"
+        >
+          <hm-post
+            :post="post"
+            v-for="(post, index) in postList"
+            :key="index"
+          ></hm-post>
+        </van-list>
+      </van-pull-refresh>
     </van-tabs>
   </div>
 </template>
@@ -29,12 +47,26 @@ export default {
       active: 1,
       tabList: [],
       postList: [],
+      pageIndex: 1,
+      pageSize: 5,
+      loading: false,
+      finished: false,
+      isRefreshing: false,
     }
   },
   watch: {
     active(newActive) {
-      this.getPostList(this.tabList[this.newActive])
-    }
+      // console.log(newActive)
+      // active发送改变 说明切换了tab
+      // 1 处理之前的数据
+      this.pageIndex = 1
+      this.postList = []
+      // 2 处理底部加载问题
+      this.finished = false
+      this.loading = true
+      // 3 重新请求数据
+      this.getPostList(this.tabList[newActive].id)
+    },
   },
   created() {
     this.getTabsList()
@@ -44,6 +76,7 @@ export default {
       let res = await this.$axios.get('/category')
       if (res.data.statusCode === 200) {
         this.tabList = res.data.data
+        console.log('tabsList:', res.data.data)
         this.getPostList(this.tabList[this.active].id)
       }
     },
@@ -51,11 +84,38 @@ export default {
       let res = await this.$axios.get('/post', {
         params: {
           category: id,
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize,
         },
       })
+      // console.log('文章列表', res.data.data)
       if (res.data.statusCode === 200) {
-        this.postList = res.data.data
+        // this.postList = res.data.data
+        this.postList = [...this.postList, ...res.data.data]
+        this.loading = false
+        this.isRefreshing = false
+        if (res.data.data.length < this.pageSize) {
+          this.finished = true
+        }
       }
+    },
+    onLoad() {
+      console.log('触底了 加载更多数据')
+      this.pageIndex++
+      this.getPostList(this.tabList[this.active].id)
+    },
+    onRefresh() {
+      // console.log('下拉 刷新了')
+      setTimeout(() => {
+        // 1 处理数据
+        this.postList = []
+        this.pageIndex = 1
+        // 2 处理加载问题
+        this.loading = true
+        this.finished = false
+        // 3 重新请求数据
+        this.getPostList(this.tabList[this.active].id)
+      }, 2000)
     },
   },
 }
