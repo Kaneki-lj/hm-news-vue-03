@@ -21,7 +21,7 @@
         {{ detail.title }}
       </div>
       <div class="user">
-        <span v-if="detail.user">{{ detail.user.nickname }}</span>
+        <span>{{ detail.user.nickname }}</span>
         <span>{{ detail.create_date | date }}</span>
       </div>
       <!-- 内容 -->
@@ -46,7 +46,9 @@
 export default {
   data() {
     return {
-      detail: {},
+      detail: {
+        user: {}
+      },
     }
   },
   created() {
