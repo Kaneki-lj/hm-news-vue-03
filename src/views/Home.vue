@@ -9,10 +9,16 @@
         <i class="iconfont iconsearch"></i>
         <span>搜索新闻</span>
       </div>
-      <div class="right" @click="$router.push('/login')">
+      <div class="right" @click="$router.push('/user')">
         <i class="iconfont iconwode"></i>
       </div>
     </div>
+    <!-- 小三角 -->
+    <van-sticky z-index="999">
+      <div class="container" @click="$router.push('/tabsedit')">
+        <i class="iconfont iconjiantou1"></i>
+      </div>
+    </van-sticky> 
     <!-- tab栏 -->
     <van-tabs v-model="active" sticky>
       <van-tab :title="tab.name" v-for="tab in tabList" :key="tab.index">
@@ -33,6 +39,7 @@
             :post="post"
             v-for="(post, index) in postList"
             :key="index"
+            @click="$router.push('/detail')"
           ></hm-post>
         </van-list>
       </van-pull-refresh>
@@ -117,6 +124,7 @@ export default {
         this.getPostList(this.tabList[this.active].id)
       }, 2000)
     },
+    
   },
 }
 </script>
@@ -124,6 +132,17 @@ export default {
 <style lang="less" scoped>
 /deep/ .van-tabs__nav {
   background: #ddd;
+  margin-right: 40px;
+}
+.container {
+  width: 40px;
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+  background-color: #ddd;
+  position: absolute;
+  right: 0;
+  z-index: 999;
 }
 .header {
   height: 50px;
