@@ -39,7 +39,7 @@
             :post="post"
             v-for="(post, index) in postList"
             :key="index"
-            @click="$router.push('/detail')"
+            @click.native="$router.push(`/detail/${post.id}`)"
           ></hm-post>
         </van-list>
       </van-pull-refresh>

@@ -36,9 +36,9 @@
 export default {
   data() {
     return {
-      username: '',
+      username: '10086',
       usernameErrMsg: '',
-      password: '',
+      password: '123',
       passwordErrMsg: '',
     }
   },
@@ -73,7 +73,12 @@ export default {
           // 提示信息
           this.$toast.success(message)
           // 跳转
-          this.$router.push('/user')
+          // 判断跳转
+          if (this.$route.params.back) {
+            this.$router.back()
+          } else {
+            this.$router.push('/user')
+          }
         } else {
           // 提示信息
           this.$toast.fail(message)
