@@ -18,11 +18,15 @@ import HmHeader from './components/HmHeader.vue'
 import HmLogo from './components/HmLogo.vue'
 import HmButton from './components/HmButton.vue'
 import HmPost from './components/HmPost.vue'
+import HmComment from './components/HmComment.vue'
+import HmFloor from './components/HmFloor.vue'
 
 Vue.component('hm-header', HmHeader)
 Vue.component('hm-logo', HmLogo)
 Vue.component('hm-button', HmButton)
 Vue.component('hm-post', HmPost)
+Vue.component('hm-comment', HmComment)
+Vue.component('hm-floor', HmFloor)
 
 // 引入vant ui组件库
 import {
@@ -39,8 +43,10 @@ import {
   Tabs,
   PullRefresh,
   Sticky,
+  Icon,
 } from 'vant'
 
+Vue.use(Icon)
 Vue.use(Sticky)
 Vue.use(PullRefresh)
 Vue.use(Tab)
