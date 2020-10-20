@@ -33,10 +33,38 @@
       </div>
       <!-- 点赞 -->
       <div class="bottom">
-        <div class="like" @click="like" :class="{active : detail.has_like}">
+        <div class="like" @click="like" :class="{ active: detail.has_like }">
           <i class="iconfont icondianzan"></i>
           <i>{{ detail.like_length }}</i>
         </div>
+      </div>
+    </div>
+    <!-- 评论列表 -->
+    <div class="comments">
+      <hm-comment
+        v-for="comment in commentList"
+        :key="comment.id"
+        :comment="comment"
+      ></hm-comment>
+    </div>
+    <!-- 底部 发表评论 -->
+    <div class="footer">
+      <!-- input -->
+      <div class="input" v-if="!isShow">
+        <div class="left">
+          <input type="text" placeholder="写跟帖" @focus="handleFocus" />
+        </div>
+        <div class="center">
+          <van-icon name="chat-o" badge="9" />
+        </div>
+        <div class="right">
+          <van-icon name="star-o" />
+        </div>
+      </div>
+      <!-- textarea -->
+      <div class="textarea" v-else >
+        <textarea placeholder="马哥" @blur="handleBlur"></textarea>
+        <div class="send">发送</div>
       </div>
     </div>
   </div>
@@ -47,10 +75,13 @@ export default {
   data() {
     return {
       detail: {},
+      commentList: [],
+      isShow: false
     }
   },
   created() {
     this.getDetail()
+    this.getCommentsList()
   },
   methods: {
     async getDetail() {
@@ -62,7 +93,7 @@ export default {
     },
     async unfollow() {
       let res = await this.$axios.get(`/user_unfollow/${this.detail.user.id}`)
-      if(res.data.statusCode === 200) {
+      if (res.data.statusCode === 200) {
         this.$toast(res.data.message)
         this.getDetail()
       }
@@ -82,7 +113,7 @@ export default {
       }
       // 请求
       let res = await this.$axios.get(`/user_follows/${this.detail.user.id}`)
-      if(res.data.statusCode === 200) {
+      if (res.data.statusCode === 200) {
         //2. 提示
         this.$toast.success(res.data.message)
         // 重新渲染页面
@@ -111,6 +142,21 @@ export default {
         this.getDetail()
       }
     },
+    async getCommentsList() {
+      let res = await this.$axios.get(`/post_comment/${this.$route.params.id}`)
+      if (res.data.statusCode === 200) {
+        this.commentList = res.data.data
+        // console.log('评论列表', commentList)
+      }
+    },
+    //聚焦
+    handleFocus() {
+      this.isShow = true
+    },
+    // 失焦
+    handleBlur() {
+      this.isShow = false
+    }
   },
 }
 </script>
@@ -191,5 +237,63 @@ export default {
 }
 video {
   width: 100%;
+}
+.comments{
+  padding-bottom: 40px;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  .input {
+    border-top: 1px solid #000;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background-color: #fff;
+    .left {
+      input {
+        height: 30px;
+        width: 180px;
+        background: #ddd;
+        padding-left: 10px;
+        outline: none;
+        border: none;
+        border-radius: 15px;
+      }
+    }
+    .center,
+    .right {
+      font-size: 20px;
+    }
+  }
+  .textarea {
+    height: 70px;
+    border-top: 1px solid #000;
+    display: flex;
+    padding: 20px;
+    align-items: flex-end;
+    textarea {
+      background: #eee;
+      border-radius: 5px;
+      padding: 5px 10px;
+      flex: 1;
+      margin-right: 20px;
+      height: 100%;
+      resize: none;
+    }
+    .send {
+      width: 50px;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 15px;
+      background: red;
+      color: #fff;
+      text-align: center;
+    }
+  }
 }
 </style>
