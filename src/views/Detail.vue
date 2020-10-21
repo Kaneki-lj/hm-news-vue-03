@@ -39,6 +39,7 @@
         </div>
       </div>
     </div>
+    <div ref="box"></div>
     <!-- 评论列表 -->
     <div class="comments">
       <hm-comment
@@ -55,16 +56,25 @@
           <input type="text" placeholder="写跟帖" @focus="handleFocus" />
         </div>
         <div class="center">
-          <van-icon name="chat-o" badge="9" />
+          <van-icon name="chat-o" :badge="detail.comment_length" />
         </div>
         <div class="right">
-          <van-icon name="star-o" />
+          <van-icon
+            name="star-o"
+            @click="star"
+            :class="{ active: detail.has_star }"
+          />
         </div>
       </div>
       <!-- textarea -->
-      <div class="textarea" v-else >
-        <textarea placeholder="马哥" @blur="handleBlur"></textarea>
-        <div class="send">发送</div>
+      <div class="textarea" v-else>
+        <textarea
+          v-model="content"
+          :placeholder="replyName ? '回复 : ' + replyName : '请输入内容'"
+          @blur="handleBlur"
+          ref="textarea"
+        ></textarea>
+        <div class="send" @touchstart="send">发送</div>
       </div>
     </div>
   </div>
@@ -76,12 +86,25 @@ export default {
     return {
       detail: {},
       commentList: [],
-      isShow: false
+      isShow: false,
+      replyId: '',
+      replyName: '',
+      content: '',
     }
   },
   created() {
     this.getDetail()
     this.getCommentsList()
+    this.$bus.$on('reply', async (replyId, replyName) => {
+      // console.log('有人点击回复了')
+      // 显示文本框
+      this.isShow = true
+      await this.$nextTick()
+      this.$refs.textarea.focus()
+      // 赋值
+      this.replyId = replyId
+      this.replyName = replyName
+    })
   },
   methods: {
     async getDetail() {
@@ -146,17 +169,73 @@ export default {
       let res = await this.$axios.get(`/post_comment/${this.$route.params.id}`)
       if (res.data.statusCode === 200) {
         this.commentList = res.data.data
-        // console.log('评论列表', commentList)
+        // console.log('评论列表', this.commentList)
       }
     },
     //聚焦
-    handleFocus() {
+    async handleFocus() {
       this.isShow = true
+      await this.$nextTick()
+      this.$refs.textarea.focus()
     },
     // 失焦
     handleBlur() {
       this.isShow = false
-    }
+      // 失焦时候 判断 没有内容 清空数据
+      if (!this.content) {
+        this.replyId = ''
+        this.replyName = ''
+      }
+    },
+    // 发表评论
+    async send() {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        this.$router.push({
+          name: 'login',
+          params: {
+            back: true,
+          },
+        })
+        this.$toast('请先登录')
+        return
+      }
+      if (this.content === '') {
+        this.$toast('评论内容不能为空')
+        return
+      }
+      let res = await this.$axios.post(
+        `/post_comment/${this.$route.params.id}`,
+        {
+          content: this.content,
+          parent_id: this.replyId,
+        }
+      )
+      console.log(res.data)
+      if (res.data.statusCode === 200) {
+        // 提示
+        this.$toast.success(res.data.message)
+        // 重新请求评论
+        this.getCommentsList()
+        this.getDetail()
+        // 清空内容
+        this.content = ''
+        this.replyId = ''
+        this.replyName = ''
+        // 文本框隐藏
+        this.isShow = false
+        // 发表成功 跳转到该位置
+        this.$refs.box.scrollIntoView()
+      }
+    },
+    // 收藏
+    async star() {
+      let res = await this.$axios.get(`/post_star/${this.$route.params.id}`)
+      if (res.data.statusCode === 200) {
+        this.$toast.success(res.data.message)
+        this.getDetail()
+      }
+    },
   },
 }
 </script>
@@ -190,6 +269,9 @@ export default {
     align-items: center;
     border-radius: 10px;
   }
+}
+.active {
+  color: #f00;
 }
 .container {
   padding: 0 20px;
@@ -238,7 +320,7 @@ export default {
 video {
   width: 100%;
 }
-.comments{
+.comments {
   padding-bottom: 40px;
 }
 .footer {

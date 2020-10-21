@@ -103,6 +103,9 @@ Vue.filter('date', function(val, format = 'YYYY-MM-DD') {
   return moment(val).format(format)
 })
 
+let bus = new Vue()
+Vue.prototype.$bus = bus
+
 // 构建vue实例
 new Vue({
   router,
