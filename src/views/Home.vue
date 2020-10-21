@@ -15,7 +15,7 @@
     </div>
     <!-- 小三角 -->
     <van-sticky z-index="999">
-      <div class="container" @click="$router.push('/tabsedit')">
+      <div class="container" @click="$router.push('/tabedit')">
         <i class="iconfont iconjiantou1"></i>
       </div>
     </van-sticky> 
@@ -49,6 +49,7 @@
 
 <script>
 export default {
+  name: 'home',
   data() {
     return {
       active: 1,

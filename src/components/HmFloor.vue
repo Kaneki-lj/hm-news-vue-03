@@ -16,7 +16,7 @@
             {{ parent.create_date | date('YYYY-MM-DD hh:mm:ss') }}
           </div>
         </div>
-        <div class="right">回复</div>
+        <div class="right" @click="reply">回复</div>
       </div>
       <div class="content">{{ parent.content }}</div>
     </div>
@@ -27,6 +27,11 @@
 export default {
   name: 'hm-floor',
   props: ['parent', 'count'],
+  methods: {
+    reply() {
+      this.$bus.$emit('reply',this.parent.id, this.parent.user.nickname)
+    }
+  }
 }
 </script>
 

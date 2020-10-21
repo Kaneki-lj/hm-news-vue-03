@@ -1,6 +1,10 @@
 <template>
   <div>
-    <router-view></router-view>
+    <!-- 缓存组件 -->
+    <keep-alive include="home">
+      <!-- 出口 -->
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
