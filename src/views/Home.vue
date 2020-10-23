@@ -5,7 +5,7 @@
       <div class="left">
         <i class="iconfont iconnew"></i>
       </div>
-      <div class="center">
+      <div class="center" @click="$router.push('search')">
         <i class="iconfont iconsearch"></i>
         <span>搜索新闻</span>
       </div>
@@ -18,7 +18,7 @@
       <div class="container" @click="$router.push('/tabedit')">
         <i class="iconfont iconjiantou1"></i>
       </div>
-    </van-sticky> 
+    </van-sticky>
     <!-- tab栏 -->
     <van-tabs v-model="active" sticky>
       <van-tab :title="tab.name" v-for="tab in tabList" :key="tab.index">
@@ -79,8 +79,26 @@ export default {
   created() {
     this.getTabsList()
   },
+  // 被 keep-alive 缓存的组件 激活时调用
+  activated() {
+    let activeTabs = JSON.parse(localStorage.getItem('activeTabs'))
+    if (activeTabs) {
+      this.tabList = activeTabs
+      this.active = 1
+      this.getPostList(this.tabList[this.active].id)
+      return
+    }
+  },
   methods: {
+    // 获取tab栏列表
     async getTabsList() {
+      // 先从本地进行获取
+      let activeTabs = JSON.parse(localStorage.getItem('activeTabs'))
+      if (activeTabs) {
+        this.tabList = activeTabs
+        this.getPostList(this.tabList[this.active].id)
+        return
+      }
       let res = await this.$axios.get('/category')
       if (res.data.statusCode === 200) {
         this.tabList = res.data.data
@@ -125,7 +143,6 @@ export default {
         this.getPostList(this.tabList[this.active].id)
       }, 2000)
     },
-    
   },
 }
 </script>
