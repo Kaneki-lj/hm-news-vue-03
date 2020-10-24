@@ -19,23 +19,48 @@
     </div>
     <!-- 搜索推荐 -->
     <div class="recommend" v-if="recommendList.length">
-        <div v-for="item in recommendList" :key="item.id">{{ item.title }}</div>
+      <div
+        v-for="item in recommendList"
+        :key="item.id"
+        @click="click_history(item.title)"
+      >
+        {{ item.title }}
+      </div>
     </div>
     <!-- 搜索文章 -->
     <div v-else-if="postList.length">
-      <hm-post v-for="post in postList" :key="post.id" :post="post"></hm-post>
+      <hm-post
+        v-for="post in postList"
+        :key="post.id"
+        :post="post"
+        @click="$router.push(`/detail/${post.id}`)"
+      ></hm-post>
     </div>
     <!-- 历史记录和热门搜索 -->
     <div class="history" v-else>
       <!-- 历史记录 -->
       <div class="title">历史记录</div>
       <div class="list">
-        <div class="item" v-for="item in historyList" :key="item" @click="click_history(item)">{{ item }}</div>
+        <div
+          class="item"
+          v-for="h in historyList"
+          :key="h"
+          @click="click_history(h)"
+        >
+          {{ h }}
+        </div>
       </div>
       <!-- 热门搜索 -->
       <div class="title">热门搜索</div>
       <div class="list">
-        <div class="item" v-for="hot in hotList" :key="hot" @click="click_history(hot)">{{ hot }}</div>
+        <div
+          class="item"
+          v-for="hot in hotList"
+          :key="hot"
+          @click="click_history(hot)"
+        >
+          {{ hot }}
+        </div>
       </div>
     </div>
   </div>
@@ -50,7 +75,7 @@ export default {
       postList: [], // 文章列表
       historyList: [], // 历史记录
       hotList: ['肺炎', '新闻', '1', '美女', '关晓彤'],
-      recommendList: []
+      recommendList: [],
     }
   },
   created() {
@@ -74,6 +99,7 @@ export default {
   methods: {
     // 搜索功能
     async search() {
+      this.recommendList = []
       // 非空
       if (this.keyword.trim() === '') return
 
@@ -88,8 +114,6 @@ export default {
       this.historyList = [...new Set(this.historyList)]
       // 后保存到本地
       localStorage.setItem('history_list', JSON.stringify(this.historyList))
-
-      
 
       // 发送请求
       let res = await this.$axios.get('/post_search', {
@@ -109,17 +133,17 @@ export default {
     },
     // 搜索推荐功能
     async search_recommend() {
-      if(this.keyword.trim() === '') return
+      if (this.keyword.trim() === '') return
       let res = await this.$axios.get('/post_search_recommend', {
         params: {
-          keyword: this.keyword
-        }
+          keyword: this.keyword,
+        },
       })
       // console.log('搜索推荐', res.data.data)
-      if(res.data.statusCode === 200) {
+      if (res.data.statusCode === 200) {
         this.recommendList = res.data.data
       }
-    }
+    },
   },
 }
 </script>
@@ -184,9 +208,9 @@ export default {
     }
   }
 }
-.recommend{
+.recommend {
   padding: 0 20px;
-  
+
   div {
     height: 40px;
     line-height: 40px;
