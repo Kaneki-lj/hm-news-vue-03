@@ -103,6 +103,22 @@ Vue.filter('date', function(val, format = 'YYYY-MM-DD') {
   return moment(val).format(format)
 })
 
+// 二次处理日期
+Vue.filter('date1', r => {
+  let now = +new Date()
+  let res = +new Date()
+  let d = (now - res) / 1000 / 60 / 60
+  if (d < 0.5) {
+    return '刚刚'
+  } else if (d < 1) {
+    return '1小时内'
+  } else if (d < 24) {
+    return Math.floor(d) + '小时前'
+  } else {
+    return moment(res).format('YYYY-MM-DD hh:mm')
+  }
+})
+
 let bus = new Vue()
 Vue.prototype.$bus = bus
 

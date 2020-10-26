@@ -13,7 +13,7 @@
         </div>
         <div class="center">
           <div class="date">
-            {{ parent.create_date | date('YYYY-MM-DD hh:mm:ss') }}
+            {{ parent.create_date | date1 }}
           </div>
         </div>
         <div class="right" @click="reply">回复</div>

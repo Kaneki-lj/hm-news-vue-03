@@ -7,7 +7,7 @@
       </div>
       <div class="center">
         <div class="name">{{ comment.user.nickname }}</div>
-        <div class="date">{{ comment.create_date | date }}</div>
+        <div class="date">{{ comment.create_date | date1 }}</div>
       </div>
       <div class="right" @click="reply">回复</div>
     </div>
