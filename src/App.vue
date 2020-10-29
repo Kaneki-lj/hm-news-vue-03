@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 缓存组件 -->
-    <keep-alive include="home">
+    <keep-alive :include="cacheList">
       <!-- 出口 -->
       <router-view></router-view>
     </keep-alive>
@@ -9,13 +9,18 @@
 </template>
 
 <script>
-export default {}
+import { mapState } from 'vuex'
+export default {
+  computed: {
+    ...mapState(['cacheList']),
+  },
+}
 </script>
 
 <style>
-.one {
+/* .one {
   width: 200px;
   height: 200px;
   background-color: aqua;
-}
+} */
 </style>

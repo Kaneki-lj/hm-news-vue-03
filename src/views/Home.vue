@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import store from '../store'
 export default {
   name: 'home',
   data() {
@@ -80,15 +81,15 @@ export default {
     this.getTabsList()
   },
   // 被 keep-alive 缓存的组件 激活时调用
-  activated() {
-    let activeTabs = JSON.parse(localStorage.getItem('activeTabs'))
-    if (activeTabs) {
-      this.tabList = activeTabs
-      this.active = 1
-      this.getPostList(this.tabList[this.active].id)
-      return
-    }
-  },
+  // activated() {
+  //   let activeTabs = JSON.parse(localStorage.getItem('activeTabs'))
+  //   if (activeTabs) {
+  //     this.tabList = activeTabs
+  //     this.active = 1
+  //     this.getPostList(this.tabList[this.active].id)
+  //     return
+  //   }
+  // },
   methods: {
     // 获取tab栏列表
     async getTabsList() {
@@ -143,6 +144,25 @@ export default {
         this.getPostList(this.tabList[this.active].id)
       }, 2000)
     },
+  },
+  // 进入之前
+  beforeRouteEnter(to, from, next) {
+    console.log('home beforeRouteEnter')
+
+    store.commit('cache', {
+      name: 'home',
+    })
+    next()
+  },
+  // 离开之前
+  beforeRouteLeave(to, from, next) {
+    // console.log('home beforeRouteLeave', to.path)
+    if (to.path === '/tabsedit') {
+      this.$store.commit('uncache', {
+        name: 'home',
+      })
+    }
+    next()
   },
 }
 </script>

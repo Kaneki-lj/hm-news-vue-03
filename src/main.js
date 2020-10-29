@@ -13,6 +13,9 @@ import 'lib-flexible'
 // 引入路由
 import router from './router'
 
+// 引入vuex
+import store from './store/index.js'
+
 // 引入子组件
 import HmHeader from './components/HmHeader.vue'
 import HmLogo from './components/HmLogo.vue'
@@ -124,6 +127,7 @@ Vue.prototype.$bus = bus
 
 // 构建vue实例
 new Vue({
+  store,
   router,
   render: h => h(App),
 }).$mount('#app')
